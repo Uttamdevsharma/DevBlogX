@@ -13,19 +13,22 @@ datasource db {
   provider = "postgresql"
 }
 
-
 model Post {
-  id String @id @default(uuid())
-  title String @db.VarChar(225)
-  content String @db.Text
-  thumbnail String?
-  isFeatured Boolean @default(false)
-  status  PostStatus @default(PUBLISHED)
-  tags String[]
-  views Int @default(0)
-  authorId String
-  createdAt DateTime @default(now())
-  updateAt DateTime @updatedAt
+  id         String     @id @default(uuid())
+  title      String     @db.VarChar(225)
+  content    String     @db.Text
+  thumbnail  String?
+  isFeatured Boolean    @default(false)
+  status     PostStatus @default(PUBLISHED)
+  tags       String[]
+  views      Int        @default(0)
+  authorId   String
+  createdAt  DateTime   @default(now())
+  updateAt   DateTime   @updatedAt
+  comments   Comment[]
+
+  @@index([authorId])
+  @@map("posts")
 }
 
 enum PostStatus {
@@ -34,20 +37,23 @@ enum PostStatus {
   ARCHIVED
 }
 
-
 model Comment {
-  id String @id @default(uuid())
-  content String @db.Text
+  id       String        @id @default(uuid())
+  content  String        @db.Text
   authorId String
-  postId String
+  postId   String
+  post     Post          @relation(fields: [postId], references: [id])
   parentId String?
-  status CommentStatus @default(APPROVED)
+  parent   Comment?      @relation("commentReplies", fields: [parentId], references: [id])
+  status   CommentStatus @default(APPROVED)
+  replies  Comment[]     @relation("commentReplies")
+
+  @@index([postId])
+  @@index([authorId])
+  @@map("comments")
 }
 
 enum CommentStatus {
   APPROVED
   REJECT
 }
-
-
-
