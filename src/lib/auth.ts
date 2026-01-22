@@ -61,6 +61,7 @@ export const auth = betterAuth({
 
     <p style="font-size: 15px; color: #555;">
       Hello <strong>${user.name || "User"}</strong>,
+      
     </p>
 
     <p style="font-size: 14px; color: #555;">
@@ -69,7 +70,7 @@ export const auth = betterAuth({
 
     <div style="text-align: center; margin: 25px 0;">
       <a href="${verificationURL}" 
-      
+
          style="background-color: #2563eb; color: #ffffff; padding: 12px 22px; text-decoration: none; border-radius: 6px; font-weight: bold; display: inline-block;">
          Verify Email
       </a>
