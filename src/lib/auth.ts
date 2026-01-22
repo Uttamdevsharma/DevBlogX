@@ -81,6 +81,7 @@ export const auth = betterAuth({
     <p style="font-size: 12px; word-break: break-all;">
   <a href="${verificationURL}" style="color: #2563eb;">
     ${verificationURL}
+    
   </a>
 </p>
 
