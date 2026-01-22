@@ -69,13 +69,14 @@ export const auth = betterAuth({
 
     <div style="text-align: center; margin: 25px 0;">
       <a href="${verificationURL}" 
+      
          style="background-color: #2563eb; color: #ffffff; padding: 12px 22px; text-decoration: none; border-radius: 6px; font-weight: bold; display: inline-block;">
          Verify Email
       </a>
     </div>
 
     <p style="font-size: 13px; color: #777;">
-    
+
       If the button doesn't work, copy and paste this link into your browser:
     </p>
 
