@@ -31,4 +31,12 @@ export const auth = betterAuth({
     autoSignIn :false,
     requireEmailVerification : true
   },
+
+  emailVerification: {
+    sendVerificationEmail: async ( { user, url, token }, request) => {
+      console.log("VeriFied email send")
+    }
+  }
+
+
 });
