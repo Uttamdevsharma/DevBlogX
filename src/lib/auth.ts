@@ -75,13 +75,14 @@ export const auth = betterAuth({
     </div>
 
     <p style="font-size: 13px; color: #777;">
+    
       If the button doesn't work, copy and paste this link into your browser:
     </p>
 
     <p style="font-size: 12px; word-break: break-all;">
   <a href="${verificationURL}" style="color: #2563eb;">
     ${verificationURL}
-    
+
   </a>
 </p>
 
