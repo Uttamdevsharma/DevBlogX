@@ -1,0 +1,52 @@
+import { NextFunction, Request, Response } from "express";
+import { auth as betterAuth } from "../lib/auth";
+
+export enum UserRole {
+  USER = "USER",
+  ADMIN = "ADMIN"
+}
+
+const auth = (...roles: UserRole[]) => {
+  return async (req: Request, res: Response, next: NextFunction) => {
+    try {
+      const session = await betterAuth.api.getSession({
+        headers: req.headers as any
+      });
+
+      // Not logged in
+      if (!session || !session.user) {
+        return res.status(401).json({
+          success: false,
+          message: "Unauthorized. Please login first."
+        });
+      }
+
+      // Role-based access control
+      if (roles.length && !roles.includes(session.user.role as UserRole)) {
+        return res.status(403).json({
+          success: false,
+          message: "Forbidden. You don't have permission."
+        });
+      }
+
+      // Attach only required fields
+      req.user = {
+        id: session.user.id,
+        email: session.user.email,
+        name: session.user.name,
+        role: session.user.role as string,
+        emailVerified: session.user.emailVerified
+      };
+
+      next();
+    } catch (error) {
+      console.error("Auth Middleware Error:", error);
+      return res.status(500).json({
+        success: false,
+        message: "Authentication failed"
+      });
+    }
+  };
+};
+
+export default auth;

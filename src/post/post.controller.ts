@@ -1,25 +1,25 @@
-import { Request, Response } from "express"
-import { postService } from "./post.service"
+import { Request, Response } from "express";
+import { postService } from "./post.service";
 
-const createPost = async(req:Request,res:Response) => {
-    try{
-        const result = await postService.createPost(req.body)
+const createPost = async (req: Request, res: Response) => {
+  try {
+    const user = req.user;
 
-        res.status(201).json({
-            result
-        })
-        
-    }catch(e){
-        res.status(400).json({
-            error : "post created Failed",
-            datails : e
-        })
-
+    if (!user) {
+      return res.status(401).json({ message: "Unauthorized" });
     }
 
+    const result = await postService.createPost(req.body, user.id);
 
-}
+    res.status(201).json({ result });
+  } catch (e) {
+    res.status(400).json({
+      error: "Post creation failed",
+      details: e
+    });
+  }
+};
 
 export const postController = {
-    createPost
-}
+  createPost
+};
