@@ -30,9 +30,10 @@ const getAllPost = async (req:Request,res:Response) =>{
   const {search} = req.query
   const searchString = typeof search === "string" ? search : undefined
 
-  
+
   const tags = req.query.tags ? (req.query.tags as string).split(",") : []
 
+  
   const isFeatured = req.query.isFeatured 
            ? req.query.isFeatured === "true"
               ? true
