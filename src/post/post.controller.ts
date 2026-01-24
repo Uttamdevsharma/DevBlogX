@@ -33,7 +33,7 @@ const getAllPost = async (req:Request,res:Response) =>{
 
   const tags = req.query.tags ? (req.query.tags as string).split(",") : []
 
-  
+
   const isFeatured = req.query.isFeatured 
            ? req.query.isFeatured === "true"
               ? true
@@ -42,6 +42,7 @@ const getAllPost = async (req:Request,res:Response) =>{
                 : undefined
             :undefined
             
+        
             
   const status = req.query.status as PostStatus | undefined
   
