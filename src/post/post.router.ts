@@ -9,4 +9,7 @@ postRouter.post('/',auth(UserRole.USER),postController.createPost)
 //get post
 postRouter.get('/',postController.getAllPost)
 
+//get single post
+postRouter.get('/:id',getPostById)
+
 export default postRouter
