@@ -10,6 +10,6 @@ postRouter.post('/',auth(UserRole.USER),postController.createPost)
 postRouter.get('/',postController.getAllPost)
 
 //get single post
-postRouter.get('/:id',getPostById)
+postRouter.get('/:id',postController.getPostById)
 
 export default postRouter
