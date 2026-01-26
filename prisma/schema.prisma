@@ -47,6 +47,7 @@ model Comment {
   parent   Comment?      @relation("commentReplies", fields: [parentId], references: [id])
   status   CommentStatus @default(APPROVED)
   replies  Comment[]     @relation("commentReplies")
+  createdAt  DateTime   @default(now())
 
   @@index([postId])
   @@index([authorId])
