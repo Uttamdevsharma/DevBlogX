@@ -132,6 +132,7 @@ const getPostById = async(id :string) => {
       where: {
         id
       },
+      
       include : {
         comments : {
           where:{
