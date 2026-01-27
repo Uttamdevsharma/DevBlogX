@@ -1,3 +1,5 @@
+import { CommentStatus } from './../../generated/prisma/enums';
+
 import { prisma } from "../lib/prisma"
 
 //create comment
@@ -74,6 +76,7 @@ const deleteComment = async(commentId:string,userId : string) => {
 
     const commentData = await prisma.comment.findFirst({
         where: {
+            id :commentId,
             authorId : userId
         }
     })
@@ -90,9 +93,42 @@ const deleteComment = async(commentId:string,userId : string) => {
 }
 
 
+//update comment
+const updateComment = async(payload :
+     {
+        content :string,
+        status : CommentStatus
+    },
+   commentId:string,userId:string) => {
+
+    const commentData = await prisma.comment.findFirst({
+        where : {
+            id : commentId,
+            authorId : userId
+        }
+
+    })
+
+    if(!commentData) {
+        throw new Error("you input wrong invlid")
+    }
+
+    return await prisma.comment.update({
+        where:{
+            id: commentId
+
+        },
+        data : {
+            ...payload
+        }
+    })
+}
+
+
 export const commentService = {
     createComment,
     getCommentById,
     getCommentByAuthor,
-    deleteComment
+    deleteComment,
+    updateComment
 }

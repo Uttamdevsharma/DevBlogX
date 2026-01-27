@@ -71,10 +71,23 @@ const deleteComment = async(req:Request,res:Response) => {
     })
 }
 
+
+//update comment
+const updateComment = async(req:Request,res:Response) => {
+    const {commentId} = req.params
+    const user = req.user
+    
+
+    const result = await commentService.updateComment(req.body,commentId as string, user?.id as string)
+    return result
+
+}
+
 export const commentController = {
     createComment,
     getCommentById,
     getCommentByAuthor,
-    deleteComment
+    deleteComment,
+    updateComment
 
 }
