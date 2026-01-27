@@ -14,6 +14,6 @@ commentRouter.post(
 )
 
 // get comment
-commentRouter.get("/:commentId",)
+commentRouter.get("/:commentId",commentController.getCommentById)
 
 export default commentRouter; 
