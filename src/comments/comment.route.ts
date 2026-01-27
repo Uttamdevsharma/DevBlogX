@@ -26,7 +26,8 @@ commentRouter.get('/author/:authorId',
 //delete comment
 commentRouter.delete('/:commentId',
     auth(UserRole.USER,UserRole.ADMIN),
-    
+    commentController.deleteComment
+
 )
 
 export default commentRouter; 

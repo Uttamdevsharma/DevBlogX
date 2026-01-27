@@ -87,9 +87,6 @@ const deleteComment = async(commentId:string,userId : string) => {
             id : commentId
         }
     })
-
-
-
 }
 
 
