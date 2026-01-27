@@ -28,9 +28,9 @@ const getCommentById = async(req:Request,res:Response)=>{
 
     try{
         const {commentId} = req.params
-        const user = await commentService.getCommentById(commentId as string)
+        const comment = await commentService.getCommentById(commentId as string)
         res.status(200).json({
-            user
+            comment
         })
 
     }catch(error){
