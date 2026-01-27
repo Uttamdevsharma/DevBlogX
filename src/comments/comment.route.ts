@@ -13,7 +13,10 @@ commentRouter.post(
     commentController.createComment
 )
 
-// get comment
+// get comment by id
 commentRouter.get("/:commentId",commentController.getCommentById)
+
+//get comment by author
+commentRouter.get('/author/:authorId',commentController.getCommentByAuthor)
 
 export default commentRouter; 
