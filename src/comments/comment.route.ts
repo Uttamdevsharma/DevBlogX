@@ -34,7 +34,7 @@ commentRouter.delete('/:commentId',
 //update comment
 commentRouter.patch('/:commentId',
     auth(UserRole.USER,UserRole.ADMIN),
-    
+    commentController.updateComment
 )
 
 export default commentRouter; 
