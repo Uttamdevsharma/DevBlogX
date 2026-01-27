@@ -1,6 +1,6 @@
 import { prisma } from "../lib/prisma"
 
-
+//create comment
 const createComment = async(payload : {
     content :string,
     authorId:string,
@@ -28,7 +28,21 @@ const createComment = async(payload : {
     })
 }
 
+//get comment by id
+const getCommentById = async(commentId:string) => {
+
+    const result = await prisma.comment.findUnique({
+        where:{
+            id : commentId
+        }
+    })
+
+    return result
+
+}
+
 
 export const commentService = {
-    createComment
+    createComment,
+    getCommentById
 }
