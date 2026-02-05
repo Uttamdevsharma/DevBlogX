@@ -1,6 +1,6 @@
 import express from 'express'
 
-import auth, { UserRole } from '../middleware/auth';
+import auth, { UserRole } from '../../middleware/auth';
 import { commentController } from './comment.controller';
 
 const commentRouter = express.Router();
