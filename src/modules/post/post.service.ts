@@ -1,4 +1,4 @@
-import { Post } from './../../../generated/prisma/client';
+import { Post } from "./../../../generated/prisma/client";
 import { prisma } from "../../lib/prisma";
 import { CommentStatus, PostStatus } from "../../../generated/prisma/enums";
 import { PostWhereInput } from "../../../generated/prisma/models";
@@ -158,98 +158,139 @@ const getPostById = async (id: string) => {
 };
 
 //get my post
-const  getMyPosts = async(authorId : string) => {
+const getMyPosts = async (authorId: string) => {
   await prisma.user.findFirstOrThrow({
-    where:{
+    where: {
       id: authorId,
       status: "ACTIVE",
     },
-    select:{
-      id:true
-    }
-  })
-  
-
-   const result = await prisma.post.findMany({
-    where:{
-      authorId
+    select: {
+      id: true,
     },
-    orderBy:{
-      createdAt:'desc'
+  });
+
+  const result = await prisma.post.findMany({
+    where: {
+      authorId,
     },
-    include:{
-      _count:{
-        select:{
-          comments:true
-        }
-      }
-    }
-   })
+    orderBy: {
+      createdAt: "desc",
+    },
+    include: {
+      _count: {
+        select: {
+          comments: true,
+        },
+      },
+    },
+  });
 
-   return result
-}
-
+  return result;
+};
 
 //update post
-const updatePost = async(postId:string,data: Partial<Post>,userId:string,isAdmin: boolean)=>{
-
+const updatePost = async (
+  postId: string,
+  data: Partial<Post>,
+  userId: string,
+  isAdmin: boolean,
+) => {
   const postData = await prisma.post.findUniqueOrThrow({
-    where:{
-      id: postId
+    where: {
+      id: postId,
     },
-    select:{
-      id:true,
-      authorId:true
-    }
-  })
+    select: {
+      id: true,
+      authorId: true,
+    },
+  });
 
-  if(!isAdmin && (postData.authorId !== userId)){
-    throw new Error("You ar not the owner of the post!")
+  if (!isAdmin && postData.authorId !== userId) {
+    throw new Error("You ar not the owner of the post!");
   }
 
-  if(!isAdmin){
-    delete data.isFeatured
+  if (!isAdmin) {
+    delete data.isFeatured;
   }
-
 
   const result = await prisma.post.update({
-    where:{
-      id : postId,
+    where: {
+      id: postId,
     },
-    data
-  })
+    data,
+  });
 
-  return result
-
-
-}
+  return result;
+};
 
 //delete post
-const deletePost = async(userId:string,postId:string,isAdmin:boolean) => {
-
+const deletePost = async (userId: string, postId: string, isAdmin: boolean) => {
   const postData = await prisma.post.findUniqueOrThrow({
-    where:{
-      id:postId
+    where: {
+      id: postId,
     },
-    select:{
-      id:true,
-      authorId:true
-    }
-  })
+    select: {
+      id: true,
+      authorId: true,
+    },
+  });
 
-
-  if(!isAdmin && (postData.authorId !== userId)){
-    throw new Error("You are not the owner of the post")
+  if (!isAdmin && postData.authorId !== userId) {
+    throw new Error("You are not the owner of the post");
   }
 
-  const result =await prisma.post.delete({
-    where:{
-      id:postId
-    }
-  })
+  const result = await prisma.post.delete({
+    where: {
+      id: postId,
+    },
+  });
 
-  return result
-}
+  return result;
+};
+
+//stats for dashboard
+const getStats = async () => {
+  return await prisma.$transaction(async (tx) => {
+    const [
+      totalPosts,
+      publlishedPosts,
+      draftPosts,
+      archivedPosts,
+      totalComments,
+      approvedComment,
+      totalUsers,
+      adminCount,
+      userCount,
+      totalViews,
+    ] = await Promise.all([
+      await tx.post.count(),
+      await tx.post.count({ where: { status: PostStatus.PUBLISHED } }),
+      await tx.post.count({ where: { status: PostStatus.DRAFT } }),
+      await tx.post.count({ where: { status: PostStatus.ARCHIVED } }),
+      await tx.comment.count(),
+      await tx.comment.count({ where: { status: CommentStatus.APPROVED } }),
+      await tx.user.count(),
+      await tx.user.count({ where: { role: "ADMIN" } }),
+      await tx.user.count({ where: { role: "USER" } }),
+      await tx.post.aggregate({
+        _sum: { views: true },
+      }),
+    ]);
+
+    return {
+      totalPosts,
+      publlishedPosts,
+      draftPosts,
+      archivedPosts,
+      totalComments,
+      approvedComment,
+      totalUsers,
+      adminCount,
+      userCount,
+      totalViews: totalViews._sum.views
+  }
+  });
+};
 
 export const postService = {
   createPost,
@@ -257,5 +298,6 @@ export const postService = {
   getPostById,
   getMyPosts,
   updatePost,
-  deletePost
+  deletePost,
+  getStats,
 };
