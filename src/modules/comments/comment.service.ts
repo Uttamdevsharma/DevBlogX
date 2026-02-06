@@ -124,11 +124,39 @@ const updateComment = async(payload :
     })
 }
 
+//update comment status by admin
+const updateStatus = async(commentId:string, data : {status: CommentStatus}) => {
+
+    const commentData = await prisma.comment.findUniqueOrThrow({
+        where:{
+            id:commentId
+        },
+        select: {
+            id:true,
+            status:true
+        }
+    })
+
+
+    if(commentData.status === data.status){
+        throw new Error(`Your provided stats ${data.status} is already up to date.`)
+    }
+
+    return await prisma.comment.update({
+        where:{
+            id:commentId
+        },
+        data
+    })
+
+}
+
 
 export const commentService = {
     createComment,
     getCommentById,
     getCommentByAuthor,
     deleteComment,
-    updateComment
+    updateComment,
+    updateStatus
 }

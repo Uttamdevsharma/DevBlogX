@@ -37,4 +37,6 @@ commentRouter.patch('/:commentId',
     commentController.updateComment
 )
 
+commentRouter.patch("/:commentId/moderate",auth(UserRole.ADMIN), commentController.updateStatus)
+
 export default commentRouter; 
