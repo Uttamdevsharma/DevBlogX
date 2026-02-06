@@ -82,57 +82,81 @@ const getPostById = async (req: Request, res: Response) => {
 };
 
 //get my posts
-const getMyPosts = async(req:Request,res:Response) => {
-
-  try{
-    const user =req.user
+const getMyPosts = async (req: Request, res: Response) => {
+  try {
+    const user = req.user;
     if (!user) {
-      throw new Error("You are unauthorized!")
-  }
-    const result = await postService.getMyPosts(user.id)
-    res.status(200).json(result)
-
-  }catch(err){
+      throw new Error("You are unauthorized!");
+    }
+    const result = await postService.getMyPosts(user.id);
+    res.status(200).json(result);
+  } catch (err) {
     res.status(400).json({
-      error:"Post Fetched failed",
-      details : err
-    })
-
+      error: "Post Fetched failed",
+      details: err,
+    });
   }
-}
+};
 
 //update post role based
-const updatePost = async(req:Request,res:Response) => {
-  try{
+const updatePost = async (req: Request, res: Response) => {
+  try {
+    const user = req.user;
+    if (!user) {
+      throw new Error("You are unauthorized");
+    }
 
-    const user = req.user
-  if(!user){
-    throw new Error("You are unauthorized")
-  }
+    const { postId } = req.params;
 
-  const {postId} = req.params
+    const isAdmin = user.role === UserRole.ADMIN;
 
-  const isAdmin =user.role === UserRole.ADMIN
-
-  const result = await postService.updatePost(postId as string,req.body,user.id,isAdmin)
-  res.status(200).json(result)
-
-  }catch(err){
-    const errMessage = (err instanceof Error) ? err.message : "Post update failed"
+    const result = await postService.updatePost(
+      postId as string,
+      req.body,
+      user.id,
+      isAdmin,
+    );
+    res.status(200).json(result);
+  } catch (err) {
+    const errMessage =
+      err instanceof Error ? err.message : "Post update failed";
     res.status(400).json({
-      error : errMessage,
-      details : err
-      
-    })
-
+      error: errMessage,
+      details: err,
+    });
   }
+};
 
-}
+//delete a post
+const deletePost = async (req: Request, res: Response) => {
+  try {
+    const user = req.user;
+    if (!user) {
+      throw new Error("You are unauthorized");
+    }
+    const { postId } = req.params;
+    const isAdmin = user.role === UserRole.ADMIN;
 
+    const result = await postService.deletePost(
+      user.id,
+      postId as string,
+      isAdmin,
+    );
+    res.status(200).json(result);
+  } catch (err) {
+    const errMessage =
+      err instanceof Error ? err.message : "Post update failed";
+    res.status(400).json({
+      error: errMessage,
+      details: err,
+    });
+  }
+};
 export const postController = {
   createPost,
   getAllPost,
   getPostById,
   getMyPosts,
-  updatePost
+  updatePost,
+  deletePost,
 };
