@@ -18,5 +18,9 @@ postController.getMyPosts
 postRouter.get("/:id", postController.getPostById);
 
 
+//update post by role based
+postRouter.patch("/:postId", auth(UserRole.USER,UserRole.ADMIN),
+postController.updatePost
+)
 
 export default postRouter;

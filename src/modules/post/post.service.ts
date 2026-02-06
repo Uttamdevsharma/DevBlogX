@@ -1,3 +1,4 @@
+import { Post } from './../../../generated/prisma/client';
 import { prisma } from "../../lib/prisma";
 import { CommentStatus, PostStatus } from "../../../generated/prisma/enums";
 import { PostWhereInput } from "../../../generated/prisma/models";
@@ -188,9 +189,45 @@ const  getMyPosts = async(authorId : string) => {
    return result
 }
 
+
+//update post
+const updatePost = async(postId:string,data: Partial<Post>,userId:string,isAdmin: boolean)=>{
+
+  const postData = await prisma.post.findUniqueOrThrow({
+    where:{
+      id: postId
+    },
+    select:{
+      id:true,
+      authorId:true
+    }
+  })
+
+  if(!isAdmin && (postData.authorId !== userId)){
+    throw new Error("You ar not the owner of the post!")
+  }
+
+  if(!isAdmin){
+    delete data.isFeatured
+  }
+
+
+  const result = await prisma.post.update({
+    where:{
+      id : postId,
+    },
+    data
+  })
+
+  return result
+
+
+}
+
 export const postService = {
   createPost,
   getAllPost,
   getPostById,
-  getMyPosts
+  getMyPosts,
+  updatePost
 };
