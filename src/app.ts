@@ -5,6 +5,7 @@ import { auth } from "./lib/auth";
 import cors from "cors";
 import commentRouter from "./modules/comments/comment.route";
 import errorHandler from "./middleware/globalErrorHandler";
+import { notFound } from "./middleware/notFound";
 const app = express();
 
 app.use(express.json());
@@ -22,8 +23,10 @@ app.use("/posts", postRouter);
 app.use("/comments", commentRouter);
 
 app.get("/", (req, res) => {
-  res.send("Hello World");
+  res.send("Welcome to Blog Website");
 });
+
+app.use(notFound)
 
 app.use(errorHandler)
 
